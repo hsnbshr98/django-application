@@ -1,6 +1,6 @@
-<!-- events/templates/events/event_form.html -->
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -15,4 +15,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/event_form.js' %}"></script>
 {% endblock %}

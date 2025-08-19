@@ -6,6 +6,12 @@ from .forms import EventForm
 from django.utils.timezone import now
 from datetime import datetime, timedelta
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views import View
+import json
+
 def event_list(request):
     query = request.GET.get('q')
     status_filter = request.GET.get('status')
@@ -71,7 +77,6 @@ def event_edit(request, pk):
         form = EventForm(instance=event)
     
     return render(request, 'events/event_form.html', {'form': form, 'title': 'Edit Event'})
-
 def event_delete(request, pk):
     event = get_object_or_404(Event, pk=pk)
     if request.method == 'POST':
@@ -79,3 +84,23 @@ def event_delete(request, pk):
         return redirect('event_list')
     
     return render(request, 'events/event_confirm_delete.html', {'event': event})
+
+@method_decorator(csrf_exempt, name='dispatch')
+class GenerateAIDescriptionView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            title = data.get('title', '')
+            location = data.get('location', '')
+            
+            if not title:
+                return JsonResponse({'error': 'Title is required'}, status=400)
+            
+            from .ai_service import AIDescriptionGenerator
+            generator = AIDescriptionGenerator()
+            description = generator.generate_description(title, location)
+            
+            return JsonResponse({'description': description})
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
