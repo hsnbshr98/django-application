@@ -1,4 +1,3 @@
-# events/ai_service.py
 from transformers import pipeline, set_seed
 import re
 
