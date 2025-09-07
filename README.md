@@ -11,6 +11,8 @@ A Django-based event management system with CRUD functionality and search/filter
 - Responsive design with Bootstrap 5
 - Crispy forms for better form rendering
 
+- For the AI part I made a small llm to generate the description using transformers
+
 ## Installation
 
 1. Clone the repository
